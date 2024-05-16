@@ -4,62 +4,75 @@
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file.
 
-import 'package:http_auth/http_auth.dart';
-import 'dart:io';
 
-void main() {
-  var client = BasicAuthClient('admin@gmail.com', 'admin');
-
-  final url = Uri.parse('https://javaops-demo.ru/topjava/rest/admin/users');
-
-  client.get(url).then((r) => stderr.writeln((r.body)));
-}
-
-/*import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:ffi';
+//import 'dart:io';
 
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import 'package:http_auth/http_auth.dart';
+  
 
-Future<Album> fetchAlbum() async {
-  final response = await http.get(
-    Uri.parse('https://jsonplaceholder.typicode.com/albums/1'),
+Future<User> fetchUser() async {
+  var client = BasicAuthClient('admin@gmail.com', 'admin');
+
+  //client.get(url).then((r) => stderr.writeln((r.body)));
+
+  final response = await client.get(
+    Uri.parse('https://javaops-demo.ru/topjava/rest/admin/users'),
     // Send authorization headers to the backend.
-    headers: {
+    /*headers: {
       HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
-    },
+    },*/
   );
-  final responseJson = jsonDecode(response.body) as Map<String, dynamic>;
+  final List responseJson = jsonDecode(response.body);// as Map<String, dynamic>;
 
-  return Album.fromJson(responseJson);
+  return User.fromJson(responseJson);
 }
 
-class Album {
-  final int userId;
-  final int id;
-  final String title;
+class User {
+  final int caloriesPerDay;
+  final String email;
+  final Bool isenabled;
+  final String name;
+  final Bool isnew;
+  final String registered;
+  final String roles;
 
-  const Album({
-    required this.userId,
-    required this.id,
-    required this.title,
+  const User( {
+    required this.caloriesPerDay,
+    required this.email,
+    required this.isenabled,
+    required this.name, 
+    required this.isnew, 
+    required this.registered, 
+    required this.roles,
   });
 
-  factory Album.fromJson(Map<String, dynamic> json) {
+  factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
-        'userId': int userId,
-        'id': int id,
-        'title': String title,
+        'caloriesPerDay': int caloriesPerDay,
+        'email': String email,
+        'isenabled': Bool isenabled,
+        'name': String name,
+        'isnew': Bool isnew,
+        'registered': String registered,
+        'roles': String roles,
       } =>
-        Album(
-          userId: userId,
-          id: id,
-          title: title,
+        User(
+          caloriesPerDay: caloriesPerDay,
+          email: email,
+          isenabled: isenabled,
+          name: name,
+          isnew: isnew,
+          registered: registered,
+          roles: roles
         ),
-      _ => throw const FormatException('Failed to load album.'),
+      _ => throw const FormatException('Failed to load user.'),
     };
   }
 }
@@ -76,12 +89,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Future<Album> futureAlbum;
+  late Future<User> futureUser;
 
   @override
   void initState() {
     super.initState();
-    futureAlbum = fetchAlbum();
+    futureUser = fetchUser();
   }
 
   @override
@@ -96,11 +109,11 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Fetch Data Example'),
         ),
         body: Center(
-          child: FutureBuilder<Album>(
-            future: futureAlbum,
+          child: FutureBuilder<User>(
+            future: futureUser,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot.data!.title);
+                return Text(snapshot.data!.email);
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
@@ -240,4 +253,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-*/*/
+*/
