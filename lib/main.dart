@@ -6,7 +6,7 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
+//import 'dart:ffi';
 //import 'dart:io';
 
 //import 'package:http/http.dart' as http;
@@ -22,9 +22,6 @@ Future<User> fetchUser() async {
   final response = await client.get(
     Uri.parse('https://javaops-demo.ru/topjava/rest/admin/users'),
     // Send authorization headers to the backend.
-    /*headers: {
-      HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
-    },*/
   );
   final responseJson = //Map<String, dynamic> responseJson =
       jsonDecode(response.body); // as Map<String, dynamic>;
@@ -36,12 +33,12 @@ class User {
   final int id;
   final String name;
   final String email;
-  final Bool isenabled;
+  final bool isenabled;
   //final Bool isnew;
   final String registered;
-  final List<String> roles;
+  final List<dynamic> roles;
   final int caloriesPerDay;
-  final String meals;
+  final String? meals;
 
   User(
       {required this.id,
@@ -52,25 +49,25 @@ class User {
       required this.registered,
       required this.roles,
       required this.caloriesPerDay,
-      required this.meals});
+      this.meals});
 
   factory User.fromJson(Map<String, dynamic> json) {
     /*switch (json) {*/
     final id = json['id'] as int;
     final name = json['name'] as String;
     final email = json['email'] as String;
-    final isenabled = json['isenabled'] as Bool;
+    final isenabled = json['enabled'] as bool;
     //final isnew = json['isnew'] as Bool;
     final registered = json['registered'] as String;
-    final roles = json['roles'] as List<String>;
+    final roles = json['roles'] as List<dynamic>;
     final caloriesPerDay = json['caloriesPerDay'] as int;
-    final meals = json['meals'] as String;
+    final meals = json['meals'] as String?;
     //} =>*/
     return User(
         id: id,
         name: name,
         email: email,
-        isenabled: isenabled,        
+        isenabled: isenabled,
         //isnew: isnew,
         registered: registered,
         roles: roles,
@@ -80,6 +77,7 @@ class User {
     //};
     //}
   }
+
 }
 
 void main() => runApp(const MyApp());
@@ -116,8 +114,16 @@ class _MyAppState extends State<MyApp> {
             future: futureUser,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot
-                    .data!.email); //return Text(snapshot.data!.email); //
+                //return Text(snapshot.data!.email);
+                return ListView(
+                  reverse: true,
+                  children: [
+                    //if (snapshot.data != null) {                    
+                      ListTile(                        
+                        title: Text(snapshot.data!.registered),
+                      ),//}
+                  ],
+                );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
