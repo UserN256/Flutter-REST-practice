@@ -4,7 +4,6 @@
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file.
 
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
@@ -14,7 +13,6 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 
 import 'package:http_auth/http_auth.dart';
-  
 
 Future<User> fetchUser() async {
   var client = BasicAuthClient('admin@gmail.com', 'admin');
@@ -28,56 +26,61 @@ Future<User> fetchUser() async {
       HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
     },*/
   );
-  final List responseJson = jsonDecode(response.body);// as Map<String, dynamic>;
+  final responseJson = //Map<String, dynamic> responseJson =
+      jsonDecode(response.body); // as Map<String, dynamic>;
 
-  return User.fromJson(responseJson);
+  return User.fromJson(responseJson[0]);
 }
 
 class User {
-  final int caloriesPerDay;
+  final int id;
+  final String name;
   final String email;
   final Bool isenabled;
-  final String name;
-  final Bool isnew;
+  //final Bool isnew;
   final String registered;
-  final String roles;
+  final List<String> roles;
+  final int caloriesPerDay;
+  final String meals;
 
-  const User( {
-    required this.caloriesPerDay,
-    required this.email,
-    required this.isenabled,
-    required this.name, 
-    required this.isnew, 
-    required this.registered, 
-    required this.roles,
-  });
+  User(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.isenabled,
+      //required this.isnew,
+      required this.registered,
+      required this.roles,
+      required this.caloriesPerDay,
+      required this.meals});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'caloriesPerDay': int caloriesPerDay,
-        'email': String email,
-        'isenabled': Bool isenabled,
-        'name': String name,
-        'isnew': Bool isnew,
-        'registered': String registered,
-        'roles': String roles,
-      } =>
-        User(
-          caloriesPerDay: caloriesPerDay,
-          email: email,
-          isenabled: isenabled,
-          name: name,
-          isnew: isnew,
-          registered: registered,
-          roles: roles
-        ),
-      _ => throw const FormatException('Failed to load user.'),
-    };
+    /*switch (json) {*/
+    final id = json['id'] as int;
+    final name = json['name'] as String;
+    final email = json['email'] as String;
+    final isenabled = json['isenabled'] as Bool;
+    //final isnew = json['isnew'] as Bool;
+    final registered = json['registered'] as String;
+    final roles = json['roles'] as List<String>;
+    final caloriesPerDay = json['caloriesPerDay'] as int;
+    final meals = json['meals'] as String;
+    //} =>*/
+    return User(
+        id: id,
+        name: name,
+        email: email,
+        isenabled: isenabled,        
+        //isnew: isnew,
+        registered: registered,
+        roles: roles,
+        caloriesPerDay: caloriesPerDay,
+        meals: meals); //,
+    //_ => throw const FormatException('Failed to load user.'),
+    //};
+    //}
   }
 }
-
-
 
 void main() => runApp(const MyApp());
 
@@ -113,7 +116,8 @@ class _MyAppState extends State<MyApp> {
             future: futureUser,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot.data!.email);
+                return Text(snapshot
+                    .data!.email); //return Text(snapshot.data!.email); //
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
