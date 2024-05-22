@@ -6,15 +6,11 @@
 
 import 'dart:async';
 import 'dart:convert';
-//import 'dart:ffi';
-//import 'dart:io';
-
-//import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 import 'package:http_auth/http_auth.dart';
 
-Future<User> fetchUser() async {
+Future<List<User>> fetchUser() async {
   var client = BasicAuthClient('admin@gmail.com', 'admin');
 
   //client.get(url).then((r) => stderr.writeln((r.body)));
@@ -23,10 +19,11 @@ Future<User> fetchUser() async {
     Uri.parse('https://javaops-demo.ru/topjava/rest/admin/users'),
     // Send authorization headers to the backend.
   );
-  final responseJson = //Map<String, dynamic> responseJson =
-      jsonDecode(response.body); // as Map<String, dynamic>;
-
-  return User.fromJson(responseJson[0]);
+  //final responseJson = jsonDecode(response.body);
+  //return User.fromJson(responseJson[0]);
+  Iterable l = json.decode(response.body);
+  List<User> users = List<User>.from(l.map((model)=> User.fromJson(model)));
+  return users;
 }
 
 class User {
@@ -34,7 +31,6 @@ class User {
   final String name;
   final String email;
   final bool isenabled;
-  //final Bool isnew;
   final String registered;
   final List<dynamic> roles;
   final int caloriesPerDay;
@@ -45,37 +41,26 @@ class User {
       required this.name,
       required this.email,
       required this.isenabled,
-      //required this.isnew,
       required this.registered,
       required this.roles,
       required this.caloriesPerDay,
       this.meals});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    /*switch (json) {*/
-    final id = json['id'] as int;
-    final name = json['name'] as String;
-    final email = json['email'] as String;
-    final isenabled = json['enabled'] as bool;
-    //final isnew = json['isnew'] as Bool;
-    final registered = json['registered'] as String;
-    final roles = json['roles'] as List<dynamic>;
-    final caloriesPerDay = json['caloriesPerDay'] as int;
-    final meals = json['meals'] as String?;
-    //} =>*/
     return User(
-        id: id,
-        name: name,
-        email: email,
-        isenabled: isenabled,
-        //isnew: isnew,
-        registered: registered,
-        roles: roles,
-        caloriesPerDay: caloriesPerDay,
-        meals: meals); //,
-    //_ => throw const FormatException('Failed to load user.'),
-    //};
-    //}
+        id: json['id'] as int,
+        name: json['name'] as String,
+        email: json['email'] as String,
+        isenabled: json['enabled'] as bool,
+        registered: json['registered'] as String,
+        roles: json['roles'] as List<dynamic>,
+        caloriesPerDay: json['caloriesPerDay'] as int,
+        meals:json['meals'] as String? ); 
+  }
+  
+  @override
+  String toString() {
+    return '{ $id,$name,$email,$isenabled,$registered,$roles,$caloriesPerDay,$meals ';
   }
 
 }
@@ -90,7 +75,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Future<User> futureUser;
+  late Future<List<User>> futureUser;
 
   @override
   void initState() {
@@ -110,7 +95,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Fetch Data Example'),
         ),
         body: Center(
-          child: FutureBuilder<User>(
+          child: FutureBuilder<List<User>>(
             future: futureUser,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -120,7 +105,7 @@ class _MyAppState extends State<MyApp> {
                   children: [
                     //if (snapshot.data != null) {                    
                       ListTile(                        
-                        title: Text(snapshot.data!.registered),
+                        title: Text(snapshot.data![0].name),
                       ),//}
                   ],
                 );
