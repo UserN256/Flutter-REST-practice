@@ -60,7 +60,7 @@ class User {
   
   @override
   String toString() {
-    return '{ $id,$name,$email,$isenabled,$registered,$roles,$caloriesPerDay,$meals';
+    return '{ id: $id, name: $name, email: $email, isenabled: $isenabled, registered: $registered, list of roles: $roles, caloriesPerDay: $caloriesPerDay, meals: $meals';
   }
 
 }
