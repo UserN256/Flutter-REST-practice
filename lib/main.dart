@@ -55,12 +55,12 @@ class User {
         registered: json['registered'] as String,
         roles: json['roles'] as List<dynamic>,
         caloriesPerDay: json['caloriesPerDay'] as int,
-        meals:json['meals'] as String? ); 
+        meals:json['meals'] as String?); 
   }
   
   @override
   String toString() {
-    return '{ $id,$name,$email,$isenabled,$registered,$roles,$caloriesPerDay,$meals ';
+    return '{ $id,$name,$email,$isenabled,$registered,$roles,$caloriesPerDay,$meals';
   }
 
 }
@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
                   children: [
                     //if (snapshot.data != null) {                    
                       ListTile(                        
-                        title: Text(snapshot.data![0].name),
+                        title: Text(snapshot.data![0].toString()),
                       ),//}
                   ],
                 );
