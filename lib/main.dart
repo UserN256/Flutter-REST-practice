@@ -104,7 +104,7 @@ class _MyAppState extends State<MyApp> {
                 return ListView(
                   children: [
                     if (snapshot.data != null)
-                    for (User user in snapshot.data!) Text(user.toString()),
+                    for (int i = 0; i<  snapshot.data!.length; i++) Text('User name is: ${snapshot.data![i].name}'),
                   ],
                 );
               } else if (snapshot.hasError) {
