@@ -104,13 +104,37 @@ class _MyAppState extends State<MyApp> {
                 return ListView(
                   children: [
                     if (snapshot.data != null)
-                    for (int i = 0; i<  snapshot.data!.length; i++) Text('User name is: ${snapshot.data![i].name}'),
+                      for (int i = 0; i < snapshot.data!.length; i++)
+                        Container(
+                          constraints: BoxConstraints.expand(
+                            width: 200,
+                            height: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium!
+                                        .fontSize! * 1.1 + 40.0,                                        
+                          ),
+                          padding: const EdgeInsets.all(8.0),
+                          color: Colors.blue,
+                          alignment: Alignment.center,
+                          child: Text(
+                              'User name is: ${snapshot.data![i].name}' ,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 22,
+                                  color: Color.fromARGB(255, 43, 29, 235))),
+                          /*Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium!
+                                    .copyWith(
+                                        color: const Color.fromARGB(
+                                            255, 43, 29, 235)
+                                            ))*/
+                        ),
                   ],
                 );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
-
               // By default, show a loading spinner.
               return const CircularProgressIndicator();
             },
