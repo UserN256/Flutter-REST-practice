@@ -7,20 +7,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-
 import 'package:http_auth/http_auth.dart';
 
 Future<List<User>> fetchUser() async {
   var client = BasicAuthClient('admin@gmail.com', 'admin');
-
   //client.get(url).then((r) => stderr.writeln((r.body)));
-
   final response = await client.get(
     Uri.parse('https://javaops-demo.ru/topjava/rest/admin/users'),
     // Send authorization headers to the backend.
   );
-  //final responseJson = jsonDecode(response.body);
-  //return User.fromJson(responseJson[0]);
   Iterable l = json.decode(response.body);
   List<User> users = List<User>.from(l.map((model) => User.fromJson(model)));
   return users;
@@ -92,6 +87,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: Scaffold(
+        backgroundColor: Colors.greenAccent,
         appBar: AppBar(
           title: const Text('Fetch JSON Data Example'),
         ),
@@ -100,38 +96,12 @@ class _MyAppState extends State<MyApp> {
             future: futureUser,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                // Showing list of all Users
-                return ListView(
-                  children: [
-                    if (snapshot.data != null)
-                      for (int i = 0; i < snapshot.data!.length; i++)
-                        Container(
-                          constraints: BoxConstraints.expand(
-                            width: 200,
-                            height: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium!
-                                        .fontSize! * 1.1 + 40.0,                                        
-                          ),
-                          padding: const EdgeInsets.all(8.0),
-                          color: Colors.blue,
-                          alignment: Alignment.center,
-                          child: Text(
-                              'User name is: ${snapshot.data![i].name}' ,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 22,
-                                  color: Color.fromARGB(255, 43, 29, 235))),
-                          /*Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium!
-                                    .copyWith(
-                                        color: const Color.fromARGB(
-                                            255, 43, 29, 235)
-                                            ))*/
-                        ),
-                  ],
-                );
+                // Showing list of all Users with Builder template
+                return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return item4Builder(snapshot, index);
+                    });
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
@@ -140,6 +110,54 @@ class _MyAppState extends State<MyApp> {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Container item4Builder(AsyncSnapshot<List<User>> snapshot, int index) {
+    return Container(
+      width: 200,
+      height: 70,
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(5)),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.green[700],
+          child: const Icon(
+            Icons.person_outline_outlined,
+            color: Colors.white,
+          ),
+        ),
+        // Showing name
+        title: Text(
+          snapshot.data![index].name,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        // Showing email...
+        subtitle: Text(snapshot.data![index].email),
+        //...and enabled state
+        trailing: snapshot.data![index].isenabled
+            ? Icon(
+                Icons.check_circle,
+                color: Colors.green[700],
+              )
+            : const Icon(
+                Icons.check_circle_outline,
+                color: Colors.grey,
+              ),
+        /*onTap: () {
+                              setState(() {
+                                contacts[index].isSelected = !contacts[index].isSelected;
+                                if (contacts[index].isSelected == true) {
+                                  selectedContacts.add(ContactModel(name, phoneNumber, true));
+                                } else if (contacts[index].isSelected == false) {
+                                  selectedContacts
+                                      .removeWhere((element) => element.name == contacts[index].name);
+                                }
+                              });
+                            }*/
       ),
     );
   }
